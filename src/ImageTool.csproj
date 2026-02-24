@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="tessdata\**">
+    <None Update="tessdata\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
 </Project>
