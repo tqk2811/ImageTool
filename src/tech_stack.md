@@ -6,9 +6,10 @@
 - Pattern: MVVM (Model-View-ViewModel) - *Khuyến khích dùng CommunityToolkit.Mvvm.*
 
 **Thư viện xử lý:**
-1. **Emgu.CV:** Dùng cho toàn bộ thao tác xử lý ảnh (chuyển đổi hệ màu, InRange HSV, MorphologyEx cho Dilation/Erosion/Closing, Resize cho Scale).
+1. **Emgu CV**: Wrapper .NET cho OpenCV, dùng để xử lý ảnh (chuyển đổi hệ màu, lọc vùng HSV, phép toán hình thái học).
 2. **Tesseract OCR:** Sử dụng wrapper cho .NET (ví dụ: `Tesseract` engine).
-3. **WPF Extended Toolkit (hoặc tương đương):** Cần thiết để sử dụng control `RangeSlider` (thanh trượt có 2 đầu mút cho Min/Max) như trong ảnh mẫu thiết kế.
+3. **Extended WPF Toolkit**: Cung cấp các control nâng cao như `RangeSlider`, `ColorPicker`, `WatermarkTextBox`.
+4. **System.Text.Json**: Xử lý lưu/tải cấu hình bộ lọc và cài đặt ứng dụng.
 
 **Xử lý hiệu suất:**
 - Quá trình xử lý ảnh (Image Processing Pipeline) và OCR phải chạy trên Background Thread (Task) để không làm đơ UI (Non-blocking UI).
