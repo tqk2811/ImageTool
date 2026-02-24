@@ -42,9 +42,10 @@ namespace ImageTool
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 _isOriginalPanning = true;
-                _lastOriginalMousePosition = e.GetPosition(OriginalScrollViewer);
+                _lastOriginalMousePosition = e.GetPosition(this);
                 OriginalScrollViewer.CaptureMouse();
                 OriginalScrollViewer.Cursor = Cursors.Hand;
+                e.Handled = true;
             }
         }
 
@@ -52,7 +53,7 @@ namespace ImageTool
         {
             if (_isOriginalPanning)
             {
-                Point currentPosition = e.GetPosition(OriginalScrollViewer);
+                Point currentPosition = e.GetPosition(this);
                 double deltaX = currentPosition.X - _lastOriginalMousePosition.X;
                 double deltaY = currentPosition.Y - _lastOriginalMousePosition.Y;
 
@@ -60,6 +61,7 @@ namespace ImageTool
                 OriginalScrollViewer.ScrollToVerticalOffset(OriginalScrollViewer.VerticalOffset - deltaY);
 
                 _lastOriginalMousePosition = currentPosition;
+                e.Handled = true;
             }
         }
 
@@ -91,9 +93,10 @@ namespace ImageTool
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 _isProcessedPanning = true;
-                _lastProcessedMousePosition = e.GetPosition(ProcessedScrollViewer);
+                _lastProcessedMousePosition = e.GetPosition(this);
                 ProcessedScrollViewer.CaptureMouse();
                 ProcessedScrollViewer.Cursor = Cursors.Hand;
+                e.Handled = true;
             }
         }
 
@@ -101,7 +104,7 @@ namespace ImageTool
         {
             if (_isProcessedPanning)
             {
-                Point currentPosition = e.GetPosition(ProcessedScrollViewer);
+                Point currentPosition = e.GetPosition(this);
                 double deltaX = currentPosition.X - _lastProcessedMousePosition.X;
                 double deltaY = currentPosition.Y - _lastProcessedMousePosition.Y;
 
@@ -109,6 +112,7 @@ namespace ImageTool
                 ProcessedScrollViewer.ScrollToVerticalOffset(ProcessedScrollViewer.VerticalOffset - deltaY);
 
                 _lastProcessedMousePosition = currentPosition;
+                e.Handled = true;
             }
         }
 

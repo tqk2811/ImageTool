@@ -311,9 +311,9 @@
                                   HorizontalScrollBarVisibility="Auto" 
                                   VerticalScrollBarVisibility="Auto"
                                   PreviewMouseWheel="OriginalPreview_MouseWheel"
-                                  MouseDown="OriginalPreview_MouseDown"
-                                  MouseMove="OriginalPreview_MouseMove"
-                                  MouseUp="OriginalPreview_MouseUp">
+                                  PreviewMouseDown="OriginalPreview_MouseDown"
+                                  PreviewMouseMove="OriginalPreview_MouseMove"
+                                  PreviewMouseUp="OriginalPreview_MouseUp">
                         <Image Source="{Binding OriginalImage}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor">
                             <Image.LayoutTransform>
                                 <ScaleTransform x:Name="OriginalScaleTransform" ScaleX="1" ScaleY="1"/>
@@ -349,9 +349,9 @@
                                   HorizontalScrollBarVisibility="Auto" 
                                   VerticalScrollBarVisibility="Auto"
                                   PreviewMouseWheel="ProcessedPreview_MouseWheel"
-                                  MouseDown="ProcessedPreview_MouseDown"
-                                  MouseMove="ProcessedPreview_MouseMove"
-                                  MouseUp="ProcessedPreview_MouseUp">
+                                  PreviewMouseDown="ProcessedPreview_MouseDown"
+                                  PreviewMouseMove="ProcessedPreview_MouseMove"
+                                  PreviewMouseUp="ProcessedPreview_MouseUp">
                         <Image Source="{Binding ProcessedImage}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor">
                             <Image.LayoutTransform>
                                 <ScaleTransform x:Name="ProcessedScaleTransform" ScaleX="1" ScaleY="1"/>
