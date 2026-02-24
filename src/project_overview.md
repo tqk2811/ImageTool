@@ -13,7 +13,10 @@
    - Hỗ trợ chọn và tích hợp nhiều bộ lọc (như Trắng, Cyan...) cùng lúc.
    - Áp dụng mask tạo ra từ dải HSV vào kênh Alpha của ảnh (làm trong suốt các vùng không khớp).
 3. **Nhận dạng chữ (OCR) với Tesseract:**
-   - **Tiền xử lý OCR**: Cung cấp các công cụ Scale, Erosion, Dilation, Closing để tối ưu ảnh cho nhận dạng văn bản.
-   - Hỗ trợ các bước tiền xử lý ảnh (Pre-processing) trước khi đưa vào OCR: Closing, Dilation, Erosion, Scale.
-   - Vẽ khung chữ nhật (Bounding box) lên giao diện tại toạ độ phát hiện chữ.
-   - Tương tác: Đưa chuột vào khung chữ nhật sẽ hiện tooltip chứa nội dung chữ, hoặc vẽ mờ text trực tiếp lên khung.
+   16. **Tiền xử lý OCR**:
+    - Cung cấp các công cụ Scale, Erosion, Dilation, Closing để tối ưu ảnh cho nhận dạng văn bản.
+    - Hỗ trợ bật/tắt riêng biệt từng tham số xử lý để so sánh kết quả nhanh chóng.
+    - Ghi nhớ các thông số cài đặt này vào `settings.json` để tự động khôi phục khi mở lại app.
+   17. **Nhận dạng & Visualization**:
+    - Vẽ khung chữ nhật (Bounding box) lên giao diện tại toạ độ phát hiện chữ.
+    - Tương tác: Đưa chuột vào khung chữ nhật sẽ hiện tooltip chứa nội dung chữ.

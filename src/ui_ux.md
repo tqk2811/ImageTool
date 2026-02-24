@@ -3,6 +3,9 @@
 **Bố cục chính (Grid Layout):**
 - **Cấu trúc 2 cột**: Cột trái chứa các thông số điều khiển (có thể co giãn và ghi nhớ độ rộng), cột phải là khu vực xem trước.
 - **Khu vực xem trước**: Chia làm 2 phần (Ảnh gốc và Ảnh kết quả) hỗ trợ Zoom/Pan đồng bộ hoặc độc lập.
+- **Tương tác mượt mà**: 
+  - Sử dụng sự kiện `PreviewMouseDown` để bắt dính thao tác kéo ảnh (Pan) ngay cả khi có các Layer đè lên trên.
+  - Tính toán tọa độ chuột dựa trên Window (`this`) để đảm bảo không bị nhảy tọa độ khi ScrollViewer thay đổi Offset.
 - **Điều khiển trực quan**: Sử dụng RangeSlider có nền màu gợi ý (Gradient) và hiển thị giá trị số thời gian thực.
 - **Thanh trạng thái**: Hiển thị thông tin tọa độ, màu sắc pixel hoặc trạng thái xử lý.
 - **Bên trái (hoặc phía trên):** Khu vực Control Panel.
