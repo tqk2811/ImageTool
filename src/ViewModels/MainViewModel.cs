@@ -14,6 +14,8 @@ using System.Linq;
 using System.ComponentModel;
 using Emgu.CV.Structure;
 using System.Windows.Media;
+using System.Threading.Tasks;
+using Emgu.CV.CvEnum;
 
 namespace ImageTool.ViewModels
 {
@@ -23,6 +25,7 @@ namespace ImageTool.ViewModels
         private const string SettingsFile = "settings.json";
         private Mat? _originalMat;
         private Mat? _processedMat;
+        private readonly OcrService _ocrService = new();
 
         [ObservableProperty]
         private BitmapSource? _originalImage;
@@ -72,12 +75,22 @@ namespace ImageTool.ViewModels
         [ObservableProperty]
         private bool _isOcrClosingEnabled = true;
 
+        [ObservableProperty]
+        private string _ocrLanguage = "eng";
+
+        [ObservableProperty]
+        private bool _isOcrRunning = false;
+
         public ObservableCollection<ColorFilter> Filters { get; } = new();
+        public ObservableCollection<OcrResult> OcrResults { get; } = new();
+
+        public string[] OcrLanguages { get; } = new[] { "eng", "vie" };
 
         public IRelayCommand OpenImageCommand { get; }
         public IRelayCommand PasteImageCommand { get; }
         public IRelayCommand AddFilterCommand { get; }
         public IRelayCommand<ColorFilter> RemoveFilterCommand { get; }
+        public IRelayCommand RunOcrCommand { get; }
 
         public MainViewModel()
         {
@@ -85,29 +98,23 @@ namespace ImageTool.ViewModels
             PasteImageCommand = new RelayCommand(PasteImage);
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand<ColorFilter>(RemoveFilter);
+            RunOcrCommand = new AsyncRelayCommand(RunOcrAsync);
 
             LoadFilters();
-            
-            // Subscribe to collection changes to handle persistence
-            Filters.CollectionChanged += (s, e) => 
+
+            Filters.CollectionChanged += (s, e) =>
             {
                 if (e.NewItems != null)
-                {
                     foreach (ColorFilter item in e.NewItems)
                         item.PropertyChanged += Filter_PropertyChanged;
-                }
                 if (e.OldItems != null)
-                {
                     foreach (ColorFilter item in e.OldItems)
                         item.PropertyChanged -= Filter_PropertyChanged;
-                }
                 SaveFilters();
             };
 
             foreach (var filter in Filters)
-            {
                 filter.PropertyChanged += Filter_PropertyChanged;
-            }
 
             LoadSettings();
         }
@@ -122,17 +129,24 @@ namespace ImageTool.ViewModels
         partial void OnCheckerSizeChanged(double value) => SaveSettings();
         partial void OnSelectedBackgroundColorChanged(Color value) => SaveSettings();
         partial void OnIsSolidBackgroundChanged(bool value) => SaveSettings();
-        
+
         partial void OnIsOcrEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnOcrScaleFactorChanged(double value) { SaveSettings(); ApplyFilters(); }
         partial void OnOcrErosionSizeChanged(int value) { SaveSettings(); ApplyFilters(); }
         partial void OnOcrDilationSizeChanged(int value) { SaveSettings(); ApplyFilters(); }
         partial void OnOcrClosingSizeChanged(int value) { SaveSettings(); ApplyFilters(); }
-        
+
         partial void OnIsOcrScaleEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrErosionEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrDilationEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
+
+        partial void OnOcrLanguageChanged(string value)
+        {
+            SaveSettings();
+            // Re-init engine với ngôn ngữ mới
+            _ocrService.InitializeOcr(value);
+        }
 
         private void LoadSettings()
         {
@@ -152,7 +166,7 @@ namespace ImageTool.ViewModels
                             settings.SelectedBackgroundColor[1],
                             settings.SelectedBackgroundColor[2],
                             settings.SelectedBackgroundColor[3]);
-                        
+
                         IsOcrEnabled = settings.IsOcrEnabled;
                         OcrScaleFactor = settings.OcrScaleFactor;
                         OcrErosionSize = settings.OcrErosionSize;
@@ -163,6 +177,8 @@ namespace ImageTool.ViewModels
                         IsOcrErosionEnabled = settings.IsOcrErosionEnabled;
                         IsOcrDilationEnabled = settings.IsOcrDilationEnabled;
                         IsOcrClosingEnabled = settings.IsOcrClosingEnabled;
+
+                        OcrLanguage = settings.OcrLanguage;
                     }
                 }
             }
@@ -170,6 +186,9 @@ namespace ImageTool.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading settings: {ex.Message}");
             }
+
+            // Khởi tạo engine sau khi load language
+            _ocrService.InitializeOcr(OcrLanguage);
         }
 
         private void SaveSettings()
@@ -181,11 +200,11 @@ namespace ImageTool.ViewModels
                     ControlPanelWidth = ControlPanelWidth,
                     CheckerSize = CheckerSize,
                     IsSolidBackground = IsSolidBackground,
-                    SelectedBackgroundColor = new byte[] { 
-                        SelectedBackgroundColor.A, 
-                        SelectedBackgroundColor.R, 
-                        SelectedBackgroundColor.G, 
-                        SelectedBackgroundColor.B 
+                    SelectedBackgroundColor = new byte[] {
+                        SelectedBackgroundColor.A,
+                        SelectedBackgroundColor.R,
+                        SelectedBackgroundColor.G,
+                        SelectedBackgroundColor.B
                     },
                     IsOcrEnabled = IsOcrEnabled,
                     OcrScaleFactor = OcrScaleFactor,
@@ -195,7 +214,8 @@ namespace ImageTool.ViewModels
                     IsOcrScaleEnabled = IsOcrScaleEnabled,
                     IsOcrErosionEnabled = IsOcrErosionEnabled,
                     IsOcrDilationEnabled = IsOcrDilationEnabled,
-                    IsOcrClosingEnabled = IsOcrClosingEnabled
+                    IsOcrClosingEnabled = IsOcrClosingEnabled,
+                    OcrLanguage = OcrLanguage
                 };
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFile, json);
@@ -213,9 +233,9 @@ namespace ImageTool.ViewModels
             try
             {
                 using Mat hsv = new Mat();
-                CvInvoke.CvtColor(_originalMat, hsv, Emgu.CV.CvEnum.ColorConversion.Bgr2Hsv);
+                CvInvoke.CvtColor(_originalMat, hsv, ColorConversion.Bgr2Hsv);
 
-                using Mat combinedMask = new Mat(hsv.Size, Emgu.CV.CvEnum.DepthType.Cv8U, 1);
+                using Mat combinedMask = new Mat(hsv.Size, DepthType.Cv8U, 1);
                 combinedMask.SetTo(new MCvScalar(0));
 
                 bool hasActiveFilter = false;
@@ -225,7 +245,7 @@ namespace ImageTool.ViewModels
                     hasActiveFilter = true;
 
                     using Mat mask = new Mat();
-                    CvInvoke.InRange(hsv, 
+                    CvInvoke.InRange(hsv,
                         new ScalarArray(new MCvScalar(filter.HMin, filter.SMin, filter.VMin)),
                         new ScalarArray(new MCvScalar(filter.HMax, filter.SMax, filter.VMax)),
                         mask);
@@ -233,26 +253,111 @@ namespace ImageTool.ViewModels
                     CvInvoke.BitwiseOr(combinedMask, mask, combinedMask);
                 }
 
+                _processedMat?.Dispose();
+
                 if (!hasActiveFilter)
                 {
-                    // If no filter is active, we could show nothing or a black mask. 
-                    // Let's show the original but with transparency or just black for now.
-                    _processedMat?.Dispose();
                     _processedMat = new Mat(_originalMat.Size, _originalMat.Depth, _originalMat.NumberOfChannels);
                     _processedMat.SetTo(new MCvScalar(0, 0, 0));
                 }
                 else
                 {
-                    _processedMat?.Dispose();
                     _processedMat = new Mat();
                     _originalMat.CopyTo(_processedMat, combinedMask);
                 }
 
+                // Áp dụng Morphological Ops nếu bật
+                _processedMat = ApplyMorphology(_processedMat);
+
                 ProcessedImage = BitmapConversionService.ToBitmapSource(_processedMat);
+
+                // Nếu OCR đang bật thì tự động chạy
+                if (IsOcrEnabled)
+                    _ = RunOcrAsync();
+                else
+                    OcrResults.Clear();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error applying filters: {ex.Message}");
+            }
+        }
+
+        /// <summary>Áp dụng Scale / Erosion / Dilation / Closing lên ảnh đã mask.</summary>
+        private Mat ApplyMorphology(Mat input)
+        {
+            if (input == null || input.IsEmpty) return input;
+
+            Mat current = input;
+
+            // Scale: dùng Resize nếu cần (chỉ áp dụng để hiển thị; OCR sẽ tự scale)
+            // Erosion
+            if (IsOcrErosionEnabled && OcrErosionSize > 0)
+            {
+                Mat eroded = new Mat();
+                int sz = OcrErosionSize;
+                using var kernel = CvInvoke.GetStructuringElement(MorphShapes.Rectangle,
+                    new System.Drawing.Size(2 * sz + 1, 2 * sz + 1),
+                    new System.Drawing.Point(sz, sz));
+                CvInvoke.Erode(current, eroded, kernel, new System.Drawing.Point(-1, -1), 1, BorderType.Default, new MCvScalar());
+                if (current != input) current.Dispose();
+                current = eroded;
+            }
+
+            // Dilation
+            if (IsOcrDilationEnabled && OcrDilationSize > 0)
+            {
+                Mat dilated = new Mat();
+                int sz = OcrDilationSize;
+                using var kernel = CvInvoke.GetStructuringElement(MorphShapes.Rectangle,
+                    new System.Drawing.Size(2 * sz + 1, 2 * sz + 1),
+                    new System.Drawing.Point(sz, sz));
+                CvInvoke.Dilate(current, dilated, kernel, new System.Drawing.Point(-1, -1), 1, BorderType.Default, new MCvScalar());
+                if (current != input) current.Dispose();
+                current = dilated;
+            }
+
+            // Closing = Dilation rồi Erosion
+            if (IsOcrClosingEnabled && OcrClosingSize > 0)
+            {
+                Mat closed = new Mat();
+                int sz = OcrClosingSize;
+                using var kernel = CvInvoke.GetStructuringElement(MorphShapes.Rectangle,
+                    new System.Drawing.Size(2 * sz + 1, 2 * sz + 1),
+                    new System.Drawing.Point(sz, sz));
+                CvInvoke.MorphologyEx(current, closed, MorphOp.Close, kernel,
+                    new System.Drawing.Point(-1, -1), 1, BorderType.Default, new MCvScalar());
+                if (current != input) current.Dispose();
+                current = closed;
+            }
+
+            return current;
+        }
+
+        private async Task RunOcrAsync()
+        {
+            if (_processedMat == null || _processedMat.IsEmpty || IsOcrRunning) return;
+
+            IsOcrRunning = true;
+            Mat matSnapshot = _processedMat.Clone(); // snapshot để chạy trên bg thread
+            double scale = IsOcrScaleEnabled ? OcrScaleFactor : 1.0;
+
+            try
+            {
+                var results = await Task.Run(() => _ocrService.PerformOcr(matSnapshot, scale));
+
+                OcrResults.Clear();
+                foreach (var r in results)
+                    OcrResults.Add(r);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[OCR] RunOcrAsync error: {ex.Message}");
+            }
+            finally
+            {
+                matSnapshot.Dispose();
+                IsOcrRunning = false;
             }
         }
 
@@ -273,7 +378,6 @@ namespace ImageTool.ViewModels
                 }
                 else
                 {
-                    // Default filters if file doesn't exist
                     Filters.Add(new ColorFilter("Trắng") { HMin = 0, HMax = 180, SMin = 0, SMax = 30, VMin = 200, VMax = 255 });
                     Filters.Add(new ColorFilter("Cyan") { HMin = 80, HMax = 100, SMin = 100, SMax = 255, VMin = 100, VMax = 255 });
                     SaveFilters();
@@ -306,9 +410,7 @@ namespace ImageTool.ViewModels
         private void RemoveFilter(ColorFilter? filter)
         {
             if (filter != null)
-            {
                 Filters.Remove(filter);
-            }
         }
 
         private void PasteImage()
@@ -319,7 +421,7 @@ namespace ImageTool.ViewModels
                 {
                     BitmapSource source = Clipboard.GetImage();
                     _originalMat = BitmapConversionService.ToMat(source);
-                    
+
                     if (_originalMat != null && !_originalMat.IsEmpty)
                     {
                         _processedMat = _originalMat.Clone();
@@ -346,15 +448,11 @@ namespace ImageTool.ViewModels
             {
                 try
                 {
-                    // Load image using Emgu.CV
                     _originalMat = CvInvoke.Imread(openFileDialog.FileName, Emgu.CV.CvEnum.ImreadModes.AnyColor);
-                    
+
                     if (_originalMat != null && !_originalMat.IsEmpty)
                     {
-                        // Convert BGR (Emgu.CV default) to BGRA for transparency support later
                         _processedMat = _originalMat.Clone();
-                        
-                        // Update UI properties
                         OriginalImage = BitmapConversionService.ToBitmapSource(_originalMat);
                         ProcessedImage = BitmapConversionService.ToBitmapSource(_processedMat);
                         ApplyFilters();
@@ -362,7 +460,6 @@ namespace ImageTool.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    // Handle error (should ideally use a DialogService)
                     System.Windows.MessageBox.Show($"Error loading image: {ex.Message}");
                 }
             }

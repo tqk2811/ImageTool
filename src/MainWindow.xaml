@@ -175,6 +175,25 @@
                         </StackPanel>
                     </GroupBox.Header>
                     <StackPanel IsEnabled="{Binding IsOcrEnabled}">
+
+                        <!-- Language + Run OCR -->
+                        <Grid Margin="0,5,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Ngôn ngữ:" VerticalAlignment="Center" FontSize="11" Margin="0,0,6,0"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding OcrLanguages}"
+                                      SelectedItem="{Binding OcrLanguage}"
+                                      VerticalAlignment="Center"/>
+                            <Button Grid.Column="2" Content="▶ OCR"
+                                    Command="{Binding RunOcrCommand}"
+                                    Margin="6,0,0,0" Padding="6,2"
+                                    FontSize="11"
+                                    IsEnabled="{Binding IsOcrRunning, Converter={StaticResource InverseBooleanConverter}}"/>
+                        </Grid>
                         <!-- Scale Factor -->
                         <Grid Margin="0,5">
                             <Grid.RowDefinitions>
@@ -358,8 +377,38 @@
                             </Image.LayoutTransform>
                         </Image>
                     </ScrollViewer>
-                    <!-- OCR Overlay Canvas will go here -->
-                    <Canvas x:Name="OcrCanvas" IsHitTestVisible="True"/>
+                    <!-- OCR Overlay Canvas -->
+                    <Canvas x:Name="OcrCanvas" IsHitTestVisible="True">
+                        <ItemsControl ItemsSource="{Binding OcrResults}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas IsItemsHost="True"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Bounds.X}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding Bounds.Y}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="Red" BorderThickness="1.5"
+                                            Width="{Binding Bounds.Width}"
+                                            Height="{Binding Bounds.Height}"
+                                            Background="Transparent"
+                                            Cursor="Hand">
+                                        <Border.ToolTip>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Text}" FontWeight="Bold" FontSize="13"/>
+                                                <TextBlock Text="{Binding Confidence, StringFormat=Confidence: {0:F1}%}" FontSize="11" Foreground="Gray"/>
+                                            </StackPanel>
+                                        </Border.ToolTip>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Canvas>
                 </Grid>
             </Border>
         </Grid>
