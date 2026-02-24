@@ -371,44 +371,51 @@
                                   PreviewMouseDown="ProcessedPreview_MouseDown"
                                   PreviewMouseMove="ProcessedPreview_MouseMove"
                                   PreviewMouseUp="ProcessedPreview_MouseUp">
-                        <Image Source="{Binding ProcessedImage}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor">
-                            <Image.LayoutTransform>
+                        <Grid>
+                            <Grid.LayoutTransform>
                                 <ScaleTransform x:Name="ProcessedScaleTransform" ScaleX="1" ScaleY="1"/>
-                            </Image.LayoutTransform>
-                        </Image>
-                    </ScrollViewer>
-                    <!-- OCR Overlay Canvas -->
-                    <Canvas x:Name="OcrCanvas" IsHitTestVisible="True">
-                        <ItemsControl ItemsSource="{Binding OcrResults}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas IsItemsHost="True"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="ContentPresenter">
-                                    <Setter Property="Canvas.Left" Value="{Binding Bounds.X}"/>
-                                    <Setter Property="Canvas.Top" Value="{Binding Bounds.Y}"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="Red" BorderThickness="1.5"
-                                            Width="{Binding Bounds.Width}"
-                                            Height="{Binding Bounds.Height}"
-                                            Background="Transparent"
-                                            Cursor="Hand">
-                                        <Border.ToolTip>
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Text}" FontWeight="Bold" FontSize="13"/>
-                                                <TextBlock Text="{Binding Confidence, StringFormat=Confidence: {0:F1}%}" FontSize="11" Foreground="Gray"/>
+                            </Grid.LayoutTransform>
+                            
+                            <Image Source="{Binding ProcessedImage}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                            
+                            <!-- OCR Overlay Canvas inside the same scaling container -->
+                            <Canvas x:Name="OcrCanvas" IsHitTestVisible="True" Background="Transparent"
+                                    Width="{Binding ProcessedImage.Width}"
+                                    Height="{Binding ProcessedImage.Height}">
+                                <ItemsControl ItemsSource="{Binding OcrResults}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas IsItemsHost="True"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="Canvas.Left" Value="{Binding Bounds.X}"/>
+                                            <Setter Property="Canvas.Top" Value="{Binding Bounds.Y}"/>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,-16,0,0">
+                                                <TextBlock Text="{Binding Text}" 
+                                                           Foreground="Red" 
+                                                           Background="#88FFFFFF"
+                                                           FontSize="10" 
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Left"
+                                                           IsHitTestVisible="False"/>
+                                                <Border BorderBrush="Red" BorderThickness="1"
+                                                        Width="{Binding Bounds.Width}"
+                                                        Height="{Binding Bounds.Height}"
+                                                        Background="Transparent"
+                                                        Cursor="Arrow"/>
                                             </StackPanel>
-                                        </Border.ToolTip>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Canvas>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Canvas>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>

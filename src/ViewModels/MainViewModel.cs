@@ -84,7 +84,7 @@ namespace ImageTool.ViewModels
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
 
-        public string[] OcrLanguages { get; } = new[] { "eng", "vie" };
+        public ObservableCollection<string> OcrLanguages { get; } = new();
 
         public IRelayCommand OpenImageCommand { get; }
         public IRelayCommand PasteImageCommand { get; }
@@ -100,6 +100,7 @@ namespace ImageTool.ViewModels
             RemoveFilterCommand = new RelayCommand<ColorFilter>(RemoveFilter);
             RunOcrCommand = new AsyncRelayCommand(RunOcrAsync);
 
+            LoadAvailableLanguages();
             LoadFilters();
 
             Filters.CollectionChanged += (s, e) =>
@@ -140,6 +141,33 @@ namespace ImageTool.ViewModels
         partial void OnIsOcrErosionEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrDilationEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
+
+        private void LoadAvailableLanguages()
+        {
+            try
+            {
+                OcrLanguages.Clear();
+                string tessdataPath = _ocrService.TessdataPath;
+                if (Directory.Exists(tessdataPath))
+                {
+                    var files = Directory.GetFiles(tessdataPath, "*.traineddata");
+                    foreach (var file in files)
+                    {
+                        OcrLanguages.Add(Path.GetFileNameWithoutExtension(file));
+                    }
+                }
+
+                if (OcrLanguages.Count == 0)
+                {
+                    OcrLanguages.Add("eng"); // Fallback
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading OCR languages: {ex.Message}");
+                if (OcrLanguages.Count == 0) OcrLanguages.Add("eng");
+            }
+        }
 
         partial void OnOcrLanguageChanged(string value)
         {
