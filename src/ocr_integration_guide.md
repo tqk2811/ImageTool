@@ -22,11 +22,14 @@ Sử dụng `unsafe` pointers để copy dữ liệu trực tiếp từ `Emgu.CV
 ## 4. Các lỗi thường gặp (Troubleshooting)
 - **Namespce Collision**: `System.Windows.Rect` (WPF) và `Tesseract.Rect` (OCR) cùng tên. Cần sử dụng fully qualified name (ví dụ: `System.Windows.Rect`) khi định nghĩa `OcrResult`.
 - **IDisposable**: Các đối tượng `TesseractEngine`, `Page`, `Pix`, và `Bitmap` đều phải được giải phóng đúng cách (sử dụng `using`).
-- **Tessdata**: Thư mục `tessdata` chứa file ngôn ngữ (ví dụ `eng.traineddata`) phải nằm cùng thư mục với file `.exe` hoặc được trỏ đường dẫn chính xác.
+- **Tessdata**: Thư mục `tessdata` chứa file ngôn ngữ (ví dụ `eng.traineddata`). Ứng dụng tự động quét thư mục này để nạp danh sách ngôn ngữ vào UI.
+- **Dynamic Loading**: `MainViewModel` sẽ gọi `LoadAvailableLanguages()` khi khởi tạo để tìm tất cả các file `*.traineddata`.
 
 ## 5. Pipeline xử lý đề xuất
 1. Lấy ảnh đã qua lọc HSV và Morphological Ops (`_processedMat`).
 2. Chuyển sang Grayscale.
 3. Chuyển sang `Bitmap` -> `Pix`.
 4. Chạy Engine OCR.
-5. Mapping toạ độ kết quả ngược lại toạ độ ảnh gốc (chia cho `ScaleFactor`).
+5. Mapping toạ độ kết quả ngược lại toạ độ ảnh gốc.
+6. **Rendering (UI Fix)**: Để đảm bảo khung OCR không bị lệch khi Zoom/Pan, `Canvas` chứa kết quả OCR được đặt cùng cấp với `Image` bên trong một `Grid` (scaling container) và nằm trong `ScrollViewer`. Khi zoom, chúng ta zoom cả `Grid` này.
+7. **Visualization**: Vẽ viền đỏ 1px và hiển thị text trực tiếp trên đầu bounding box (không dùng tooltip để tăng trải nghiệm người dùng).
