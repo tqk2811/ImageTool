@@ -363,5 +363,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 /src/*.txt
-/*.txt
 /src/*.json
+/*.txt
+/*.json
+/src/ImageTool/*.txt
+/src/ImageTool/*.json
