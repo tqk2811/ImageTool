@@ -19,6 +19,12 @@ using Emgu.CV.CvEnum;
 
 namespace ImageTool.ViewModels
 {
+    public enum OcrPreviewMode
+    {
+        Gray,
+        Bgra
+    }
+
     public partial class MainViewModel : ObservableObject
     {
         private const string FiltersFile = "filters.json";
@@ -81,6 +87,9 @@ namespace ImageTool.ViewModels
         [ObservableProperty]
         private bool _isOcrRunning = false;
 
+        [ObservableProperty]
+        private OcrPreviewMode _ocrPreviewMode = OcrPreviewMode.Bgra;
+
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
 
@@ -141,6 +150,8 @@ namespace ImageTool.ViewModels
         partial void OnIsOcrErosionEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrDilationEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
+
+        partial void OnOcrPreviewModeChanged(OcrPreviewMode value) { SaveSettings(); ApplyFilters(); }
 
         private void LoadAvailableLanguages()
         {
@@ -207,6 +218,7 @@ namespace ImageTool.ViewModels
                         IsOcrClosingEnabled = settings.IsOcrClosingEnabled;
 
                         OcrLanguage = settings.OcrLanguage;
+                        OcrPreviewMode = settings.OcrPreviewMode;
                     }
                 }
             }
@@ -243,7 +255,8 @@ namespace ImageTool.ViewModels
                     IsOcrErosionEnabled = IsOcrErosionEnabled,
                     IsOcrDilationEnabled = IsOcrDilationEnabled,
                     IsOcrClosingEnabled = IsOcrClosingEnabled,
-                    OcrLanguage = OcrLanguage
+                    OcrLanguage = OcrLanguage,
+                    OcrPreviewMode = OcrPreviewMode
                 };
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFile, json);
@@ -290,8 +303,23 @@ namespace ImageTool.ViewModels
                 }
                 else
                 {
-                    _processedMat = new Mat();
-                    _originalMat.CopyTo(_processedMat, combinedMask);
+                    if (OcrPreviewMode == OcrPreviewMode.Gray)
+                    {
+                        _processedMat = combinedMask.Clone();
+                    }
+                    else
+                    {
+                        // Bgra mode: Original BGR + combinedMask as Alpha
+                        _processedMat = new Mat();
+                        using VectorOfMat channels = new VectorOfMat();
+                        CvInvoke.Split(_originalMat, channels); // Split B, G, R
+
+                        using (Mat alpha = combinedMask.Clone())
+                        {
+                            channels.Push(alpha); // Add Alpha channel
+                            CvInvoke.Merge(channels, _processedMat);
+                        }
+                    }
                 }
 
                 // Áp dụng Morphological Ops nếu bật

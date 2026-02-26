@@ -14,6 +14,7 @@
     </Window.InputBindings>
     <Window.Resources>
         <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
         <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <conv:CheckerSizeToRectConverter x:Key="CheckerSizeToRectConverter"/>
         <conv:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
@@ -194,6 +195,17 @@
                                     FontSize="11"
                                     IsEnabled="{Binding IsOcrRunning, Converter={StaticResource InverseBooleanConverter}}"/>
                         </Grid>
+
+                        <!-- Preview Mode Selection -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <RadioButton Content="Gray (mask)" 
+                                         IsChecked="{Binding OcrPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Gray}"
+                                         Margin="0,0,10,0" FontSize="11"/>
+                            <RadioButton Content="Bgra (mask đã áp vào alpha)" 
+                                         IsChecked="{Binding OcrPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Bgra}"
+                                         FontSize="11"/>
+                        </StackPanel>
+
                         <!-- Scale Factor -->
                         <Grid Margin="0,5">
                             <Grid.RowDefinitions>
