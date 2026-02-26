@@ -26,10 +26,16 @@ Sử dụng `unsafe` pointers để copy dữ liệu trực tiếp từ `Emgu.CV
 - **Dynamic Loading**: `MainViewModel` sẽ gọi `LoadAvailableLanguages()` khi khởi tạo để tìm tất cả các file `*.traineddata`.
 
 ## 5. Pipeline xử lý đề xuất
-1. Lấy ảnh đã qua lọc HSV và Morphological Ops (`_processedMat`).
-2. Chuyển sang Grayscale.
-3. Chuyển sang `Bitmap` -> `Pix`.
-4. Chạy Engine OCR.
-5. Mapping toạ độ kết quả ngược lại toạ độ ảnh gốc.
-6. **Rendering (UI Fix)**: Để đảm bảo khung OCR không bị lệch khi Zoom/Pan, `Canvas` chứa kết quả OCR được đặt cùng cấp với `Image` bên trong một `Grid` (scaling container) và nằm trong `ScrollViewer`. Khi zoom, chúng ta zoom cả `Grid` này.
-7. **Visualization**: Vẽ viền đỏ 1px và hiển thị text trực tiếp trên đầu bounding box (không dùng tooltip để tăng trải nghiệm người dùng).
+1. Lấy ảnh đã qua lọc HSV và Morphological Ops.
+2. **Chế độ xem trước (OcrViewMode)**:
+   - **Gray**: Chỉ hiển thị mask đa qua xử lý (grayscale).
+   - **Bgra**: Ghép kênh Alpha từ mask vào ảnh BGR gốc để hiển thị trên nền carô.
+3. Chuyển sang Grayscale (nếu là Bgra).
+4. Chuyển sang `Bitmap` -> `Pix`.
+5. Chạy Engine OCR.
+6. Mapping toạ độ kết quả ngược lại toạ độ ảnh gốc.
+7. **Rendering (UI Fix)**: Để đảm bảo khung OCR không bị lệch khi Zoom/Pan, `Canvas` chứa kết quả OCR được đặt cùng cấp với `Image` bên trong một `Grid` (scaling container) và nằm trong `ScrollViewer`. Khi zoom, chúng ta zoom cả `Grid` này.
+8. **Visualization**: Vẽ viền đỏ 1px và hiển thị text trực tiếp trên đầu bounding box (không dùng tooltip để tăng trải nghiệm người dùng).
+
+## 6. Lưu ý về Quy tắc AI
+Theo `AI_Rules.md`, mọi thay đổi mã nguồn phải được phản ánh vào tài liệu này và dự án phải build thành công trước khi commit.
