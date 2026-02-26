@@ -168,6 +168,17 @@
                     </StackPanel>
                 </GroupBox>
 
+                <GroupBox Header="Chế độ hiển thị kết quả" Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <RadioButton Content="Gray (mask)" 
+                                     IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Gray}"
+                                     Margin="0,0,10,0" FontSize="11"/>
+                        <RadioButton Content="Bgra (mask đã áp vào alpha)" 
+                                     IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Bgra}"
+                                     FontSize="11"/>
+                    </StackPanel>
+                </GroupBox>
+
                 <GroupBox Margin="0,0,0,10">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
@@ -195,16 +206,6 @@
                                     FontSize="11"
                                     IsEnabled="{Binding IsOcrRunning, Converter={StaticResource InverseBooleanConverter}}"/>
                         </Grid>
-
-                        <!-- Preview Mode Selection -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <RadioButton Content="Gray (mask)" 
-                                         IsChecked="{Binding OcrPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Gray}"
-                                         Margin="0,0,10,0" FontSize="11"/>
-                            <RadioButton Content="Bgra (mask đã áp vào alpha)" 
-                                         IsChecked="{Binding OcrPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Bgra}"
-                                         FontSize="11"/>
-                        </StackPanel>
 
                         <!-- Scale Factor -->
                         <Grid Margin="0,5">

@@ -12,7 +12,7 @@
   - Danh sách các bộ lọc (CheckBox để bật/tắt).
   - 3 thanh Range Slider (H, S, V) cho mỗi bộ lọc.
   - Các tham số tiền xử lý OCR (Numeric UpDown hoặc Slider cho Dilation, Erosion, Closing size, Scale factor).
-  - Chế độ xem trước: Tùy chọn **Gray (mask)** hoặc **Bgra (mask áp vào alpha)**.
+  - Chế độ xem trước: Tùy chọn **Gray (mask)** hoặc **Bgra (mask áp vào alpha)** (nằm trong mục Chế độ hiển thị kết quả).
   - ComboBox/ColorPicker để chọn màu nền (Bàn cờ caro hoặc Solid Color).
 - **Bên phải (hoặc khu vực trung tâm):** Khu vực hiển thị ảnh.
   - Viewport nhỏ: Hiển thị ảnh gốc. Đặt trong một `ScrollViewer` hoặc `Canvas`, bắt sự kiện `MouseWheel` để thay đổi ScaleTransform (Zoom).

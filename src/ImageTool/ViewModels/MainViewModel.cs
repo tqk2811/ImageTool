@@ -20,7 +20,7 @@ using Emgu.CV.Util;
 
 namespace ImageTool.ViewModels
 {
-    public enum OcrViewMode
+    public enum ResultViewMode
     {
         Gray,
         Bgra
@@ -89,7 +89,7 @@ namespace ImageTool.ViewModels
         private bool _isOcrRunning = false;
 
         [ObservableProperty]
-        private OcrViewMode _ocrPreviewMode = OcrViewMode.Bgra;
+        private ResultViewMode _resultPreviewMode = ResultViewMode.Bgra;
 
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
@@ -152,7 +152,7 @@ namespace ImageTool.ViewModels
         partial void OnIsOcrDilationEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
 
-        partial void OnOcrPreviewModeChanged(OcrViewMode value) { SaveSettings(); ApplyFilters(); }
+        partial void OnResultPreviewModeChanged(ResultViewMode value) { SaveSettings(); ApplyFilters(); }
 
         private void LoadAvailableLanguages()
         {
@@ -219,7 +219,7 @@ namespace ImageTool.ViewModels
                         IsOcrClosingEnabled = settings.IsOcrClosingEnabled;
 
                         OcrLanguage = settings.OcrLanguage;
-                        OcrPreviewMode = settings.OcrPreviewMode;
+                        ResultPreviewMode = settings.ResultPreviewMode;
                     }
                 }
             }
@@ -257,7 +257,7 @@ namespace ImageTool.ViewModels
                     IsOcrDilationEnabled = IsOcrDilationEnabled,
                     IsOcrClosingEnabled = IsOcrClosingEnabled,
                     OcrLanguage = OcrLanguage,
-                    OcrPreviewMode = OcrPreviewMode
+                    ResultPreviewMode = ResultPreviewMode
                 };
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFile, json);
@@ -304,7 +304,7 @@ namespace ImageTool.ViewModels
                 }
                 else
                 {
-                    if (OcrPreviewMode == OcrViewMode.Gray)
+                    if (ResultPreviewMode == ResultViewMode.Gray)
                     {
                         _processedMat = combinedMask.Clone();
                     }

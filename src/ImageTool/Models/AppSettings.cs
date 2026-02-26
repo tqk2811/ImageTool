@@ -21,7 +21,7 @@ namespace ImageTool.Models
         public bool IsOcrClosingEnabled { get; set; } = true;
 
         public string OcrLanguage { get; set; } = "eng";
-        public OcrViewMode OcrPreviewMode { get; set; } = OcrViewMode.Bgra;
+        public ResultViewMode ResultPreviewMode { get; set; } = ResultViewMode.Bgra;
     }
 }
 

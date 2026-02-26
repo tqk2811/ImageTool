@@ -16,7 +16,7 @@
    - **Tiền xử lý OCR**:
      - Cung cấp các công cụ Scale, Erosion, Dilation, Closing để tối ưu ảnh cho nhận dạng văn bản.
      - Hỗ trợ bật/tắt riêng biệt từng tham số xử lý để so sánh kết quả nhanh chóng.
-     - **Chế độ xem trước**: Cung cấp 2 tùy chọn **Gray (mask)** để xem mask đen trắng và **Bgra (mask áp alpha)** để xem ảnh gốc sau khi lọc nền.
+     - **Chế độ xem trước**: Cung cấp 2 tùy chọn **Gray (mask)** để xem mask đen trắng và **Bgra (mask áp alpha)** để xem ảnh gốc sau khi lọc nền (nằm ngoài phần OCR).
      - Ghi nhớ các thông số cài đặt vào `settings.json` để tự động khôi phục khi mở lại app.
    - **Nhận dạng & Visualization**:
      - Vẽ khung chữ nhật (Bounding box) 1px màu đỏ lên giao diện tại toạ độ phát hiện chữ.

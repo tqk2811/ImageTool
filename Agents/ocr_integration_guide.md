@@ -27,7 +27,7 @@ Sử dụng `unsafe` pointers để copy dữ liệu trực tiếp từ `Emgu.CV
 
 ## 5. Pipeline xử lý đề xuất
 1. Lấy ảnh đã qua lọc HSV và Morphological Ops.
-2. **Chế độ xem trước (OcrViewMode)**:
+2. **Chế độ xem trước (ResultViewMode)**:
    - **Gray**: Chỉ hiển thị mask đa qua xử lý (grayscale).
    - **Bgra**: Ghép kênh Alpha từ mask vào ảnh BGR gốc để hiển thị trên nền carô.
 3. Chuyển sang Grayscale (nếu là Bgra).
