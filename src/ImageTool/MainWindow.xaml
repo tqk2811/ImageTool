@@ -223,12 +223,12 @@
                                 <TextBlock Text="Scale Factor" FontSize="11" Margin="5,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="1" FontSize="9" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" IsEnabled="{Binding IsOcrScaleEnabled}"/>
-                            <Slider Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="5" 
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="0.1" FontSize="9" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" IsEnabled="{Binding IsOcrScaleEnabled}"/>
+                            <Slider Grid.Row="1" Grid.Column="1" Minimum="0.1" Maximum="5" 
                                     Value="{Binding OcrScaleFactor}" 
                                     IsEnabled="{Binding IsOcrScaleEnabled}"
                                     AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="1"
-                                    TickFrequency="0.5" IsSnapToTickEnabled="True"/>
+                                    TickFrequency="0.1" IsSnapToTickEnabled="True"/>
                             <TextBlock Grid.Row="1" Grid.Column="2" Text="5" FontSize="9" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" IsEnabled="{Binding IsOcrScaleEnabled}"/>
                         </Grid>
                         

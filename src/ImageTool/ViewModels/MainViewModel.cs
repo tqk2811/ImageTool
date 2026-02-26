@@ -313,7 +313,15 @@ namespace ImageTool.ViewModels
                         // Bgra mode: Original BGR + combinedMask as Alpha
                         _processedMat = new Mat();
                         using VectorOfMat channels = new VectorOfMat();
-                        CvInvoke.Split(_originalMat, channels); // Split B, G, R
+                        using Mat bgrOnly = new Mat();
+
+                        // Ensure we only take the first 3 channels (BGR) even if original has 4
+                        if (_originalMat.NumberOfChannels == 4)
+                            CvInvoke.CvtColor(_originalMat, bgrOnly, ColorConversion.Bgra2Bgr);
+                        else
+                            _originalMat.CopyTo(bgrOnly);
+
+                        CvInvoke.Split(bgrOnly, channels); // Split B, G, R
 
                         using (Mat alpha = combinedMask.Clone())
                         {

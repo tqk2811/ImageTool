@@ -18,7 +18,4 @@
   - Viewport nhỏ: Hiển thị ảnh gốc. Đặt trong một `ScrollViewer` hoặc `Canvas`, bắt sự kiện `MouseWheel` để thay đổi ScaleTransform (Zoom).
   - Viewport lớn: Hiển thị ảnh sau xử lý. Dùng `DrawingBrush` tạo pattern bàn cờ caro đen/trắng làm background của control chứa ảnh.
 
-**Tương tác OCR Layer:**
-- Sau khi chạy Tesseract, tạo một Overlay `Canvas` đè lên trên ảnh kết quả.
-- Vẽ các `Rectangle` (WPF Shape) dựa trên Bounding Box trả về từ Tesseract.
-- Gắn thuộc tính `ToolTip` vào các `Rectangle` này để hiển thị text nhận diện được khi người dùng hover chuột vào.
+- **Visualization**: Vẽ viền đỏ 1px và hiển thị text trực tiếp trên đầu bounding box (không dùng tooltip để tăng trải nghiệm người dùng, giúp quan sát nhanh kết quả).

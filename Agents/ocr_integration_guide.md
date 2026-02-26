@@ -36,6 +36,8 @@ Sử dụng `unsafe` pointers để copy dữ liệu trực tiếp từ `Emgu.CV
 6. Mapping toạ độ kết quả ngược lại toạ độ ảnh gốc.
 7. **Rendering (UI Fix)**: Để đảm bảo khung OCR không bị lệch khi Zoom/Pan, `Canvas` chứa kết quả OCR được đặt cùng cấp với `Image` bên trong một `Grid` (scaling container) và nằm trong `ScrollViewer`. Khi zoom, chúng ta zoom cả `Grid` này.
 8. **Visualization**: Vẽ viền đỏ 1px và hiển thị text trực tiếp trên đầu bounding box (không dùng tooltip để tăng trải nghiệm người dùng).
+9. **Xử lý số kênh ảnh (Channel Handling)**: Đảm bảo ảnh đầu vào preview luôn được chuẩn hóa (ví dụ: chuyển 4-channel sang 3-channel trước khi trộn alpha) để tránh lỗi hiển thị sọc (striping bug).
+10. **Độ phân giải Scale**: Hỗ trợ Scale Factor từ 0.1 trở lên để người dùng linh hoạt điều chỉnh độ phân giải đầu vào cho Tesseract.
 
 ## 6. Lưu ý về Quy tắc AI
 Theo `AI_Rules.md`, mọi thay đổi mã nguồn phải được phản ánh vào tài liệu này và dự án phải build thành công trước khi commit.

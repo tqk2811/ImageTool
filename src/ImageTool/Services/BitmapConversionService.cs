@@ -13,10 +13,22 @@ namespace ImageTool.Services
             if (mat == null || mat.IsEmpty)
                 return null!;
 
-            // Ensure the image is in Bgr8 or Bgra8 format
-            // mat.Step is the number of bytes per row
-            PixelFormat format = mat.NumberOfChannels == 3 ? PixelFormats.Bgr24 : PixelFormats.Bgra32;
-            
+            PixelFormat format;
+            switch (mat.NumberOfChannels)
+            {
+                case 1:
+                    format = PixelFormats.Gray8;
+                    break;
+                case 3:
+                    format = PixelFormats.Bgr24;
+                    break;
+                case 4:
+                    format = PixelFormats.Bgra32;
+                    break;
+                default:
+                    throw new NotSupportedException($"Unsupported number of channels: {mat.NumberOfChannels}");
+            }
+
             BitmapSource source = BitmapSource.Create(
                 mat.Width,
                 mat.Height,
