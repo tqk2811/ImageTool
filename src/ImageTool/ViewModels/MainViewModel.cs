@@ -16,10 +16,11 @@ using Emgu.CV.Structure;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Util;
 
 namespace ImageTool.ViewModels
 {
-    public enum OcrPreviewMode
+    public enum OcrViewMode
     {
         Gray,
         Bgra
@@ -88,7 +89,7 @@ namespace ImageTool.ViewModels
         private bool _isOcrRunning = false;
 
         [ObservableProperty]
-        private OcrPreviewMode _ocrPreviewMode = OcrPreviewMode.Bgra;
+        private OcrViewMode _ocrPreviewMode = OcrViewMode.Bgra;
 
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
@@ -151,7 +152,7 @@ namespace ImageTool.ViewModels
         partial void OnIsOcrDilationEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
 
-        partial void OnOcrPreviewModeChanged(OcrPreviewMode value) { SaveSettings(); ApplyFilters(); }
+        partial void OnOcrPreviewModeChanged(OcrViewMode value) { SaveSettings(); ApplyFilters(); }
 
         private void LoadAvailableLanguages()
         {
@@ -303,7 +304,7 @@ namespace ImageTool.ViewModels
                 }
                 else
                 {
-                    if (OcrPreviewMode == OcrPreviewMode.Gray)
+                    if (OcrPreviewMode == OcrViewMode.Gray)
                     {
                         _processedMat = combinedMask.Clone();
                     }

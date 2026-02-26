@@ -1,3 +1,5 @@
+using ImageTool.ViewModels;
+
 namespace ImageTool.Models
 {
     public class AppSettings
@@ -19,7 +21,7 @@ namespace ImageTool.Models
         public bool IsOcrClosingEnabled { get; set; } = true;
 
         public string OcrLanguage { get; set; } = "eng";
-        public ViewModels.MainViewModel.OcrPreviewMode OcrPreviewMode { get; set; } = ViewModels.MainViewModel.OcrPreviewMode.Bgra;
+        public OcrViewMode OcrPreviewMode { get; set; } = OcrViewMode.Bgra;
     }
 }
 
