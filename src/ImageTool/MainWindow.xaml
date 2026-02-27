@@ -74,7 +74,8 @@
                     </Grid.RowDefinitions>
                     <Button Grid.Row="0" Content="Thêm bộ lọc mới" Command="{Binding AddFilterCommand}" Margin="5"/>
                     <ListBox Grid.Row="1" ItemsSource="{Binding Filters}" HorizontalContentAlignment="Stretch" BorderThickness="0"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,5">
