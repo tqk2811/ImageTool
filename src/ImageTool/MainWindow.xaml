@@ -55,119 +55,133 @@
                       ShowsPreview="True" Width="5" Background="#EEE"/>
 
         <!-- Left Panel: Controls -->
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10">
-                <Button Content="Open Image" Command="{Binding OpenImageCommand}" Margin="0,0,0,10"/>
-                
-                <GroupBox Header="Danh sách bộ lọc (HSV Color Filtering)" Margin="0,0,0,10">
-                    <StackPanel>
-                        <Button Content="Thêm bộ lọc mới" Command="{Binding AddFilterCommand}" Margin="5"/>
-                        <ListBox ItemsSource="{Binding Filters}" HorizontalContentAlignment="Stretch" BorderThickness="0">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="100"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="30"/>
-                                        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                                        <!-- Left column: Toggle and Name/Note -->
-                                        <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,5,10,0">
-                                            <CheckBox IsChecked="{Binding IsUsed}" Content="Sử dụng" FontSize="10"/>
-                                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
-                                                     FontSize="11" FontWeight="SemiBold" Margin="0,5,0,0" Foreground="Navy"/>
-                                            <xctk:WatermarkTextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" 
-                                                                  FontSize="9" Margin="0,5,0,0" Watermark="Ghi chú..."/>
-                                        </StackPanel>
+            <!-- Header: Open Button -->
+            <Button Grid.Row="0" Content="Open Image" Command="{Binding OpenImageCommand}" Margin="0,0,0,10"/>
 
-                                        <!-- Middle column: The 3 Sliders -->
-                                        <StackPanel Grid.Column="1">
-                                            <!-- H Slider -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="20"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="H:" VerticalAlignment="Center" FontSize="10"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding HMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                                                <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="180" 
-                                                                  LowerValue="{Binding HMin}" HigherValue="{Binding HMax}">
-                                                    <xctk:RangeSlider.Background>
-                                                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                            <GradientStop Color="Red" Offset="0.0"/>
-                                                            <GradientStop Color="Yellow" Offset="0.16"/>
-                                                            <GradientStop Color="Lime" Offset="0.33"/>
-                                                            <GradientStop Color="Cyan" Offset="0.5"/>
-                                                            <GradientStop Color="Blue" Offset="0.66"/>
-                                                            <GradientStop Color="Magenta" Offset="0.83"/>
-                                                            <GradientStop Color="Red" Offset="1.0"/>
-                                                        </LinearGradientBrush>
-                                                    </xctk:RangeSlider.Background>
-                                                </xctk:RangeSlider>
-                                                <TextBlock Grid.Column="3" Text="{Binding HMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                                            </Grid>
+            <!-- Middle: Filters (Fill remaining space) -->
+            <GroupBox Grid.Row="1" Header="Danh sách bộ lọc (HSV Color Filtering)" Margin="0,0,0,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Content="Thêm bộ lọc mới" Command="{Binding AddFilterCommand}" Margin="5"/>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Filters}" HorizontalContentAlignment="Stretch" BorderThickness="0"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
 
-                                            <!-- S Slider -->
-                                            <Grid Margin="0,2,0,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="20"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="S:" VerticalAlignment="Center" FontSize="10"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding SMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                                                <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="255" 
-                                                                  LowerValue="{Binding SMin}" HigherValue="{Binding SMax}">
-                                                    <xctk:RangeSlider.Background>
-                                                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                            <GradientStop Color="White" Offset="0"/>
-                                                            <GradientStop Color="#00BFA5" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </xctk:RangeSlider.Background>
-                                                </xctk:RangeSlider>
-                                                <TextBlock Grid.Column="3" Text="{Binding SMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                                            </Grid>
+                                    <!-- Left column: Toggle and Name/Note -->
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,5,10,0">
+                                        <CheckBox IsChecked="{Binding IsUsed}" Content="Sử dụng" FontSize="10"/>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                 FontSize="11" FontWeight="SemiBold" Margin="0,5,0,0" Foreground="Navy"/>
+                                        <xctk:WatermarkTextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" 
+                                                              FontSize="9" Margin="0,5,0,0" Watermark="Ghi chú..."/>
+                                    </StackPanel>
 
-                                            <!-- V Slider -->
-                                            <Grid Margin="0,2,0,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="20"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="30"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="V:" VerticalAlignment="Center" FontSize="10"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding VMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                                                <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="255" 
-                                                                  LowerValue="{Binding VMin}" HigherValue="{Binding VMax}">
-                                                    <xctk:RangeSlider.Background>
-                                                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                            <GradientStop Color="Black" Offset="0"/>
-                                                            <GradientStop Color="White" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </xctk:RangeSlider.Background>
-                                                </xctk:RangeSlider>
-                                                <TextBlock Grid.Column="3" Text="{Binding VMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                                            </Grid>
-                                        </StackPanel>
+                                    <!-- Middle column: The 3 Sliders -->
+                                    <StackPanel Grid.Column="1">
+                                        <!-- H Slider -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="30"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="H:" VerticalAlignment="Center" FontSize="10"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding HMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                                            <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="180" 
+                                                              LowerValue="{Binding HMin}" HigherValue="{Binding HMax}">
+                                                <xctk:RangeSlider.Background>
+                                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                        <GradientStop Color="Red" Offset="0.0"/>
+                                                        <GradientStop Color="Yellow" Offset="0.16"/>
+                                                        <GradientStop Color="Lime" Offset="0.33"/>
+                                                        <GradientStop Color="Cyan" Offset="0.5"/>
+                                                        <GradientStop Color="Blue" Offset="0.66"/>
+                                                        <GradientStop Color="Magenta" Offset="0.83"/>
+                                                        <GradientStop Color="Red" Offset="1.0"/>
+                                                    </LinearGradientBrush>
+                                                </xctk:RangeSlider.Background>
+                                            </xctk:RangeSlider>
+                                            <TextBlock Grid.Column="3" Text="{Binding HMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                        </Grid>
 
-                                        <!-- Right column: Remove Button -->
-                                        <Button Grid.Column="2" Content="X" 
-                                                Command="{Binding DataContext.RemoveFilterCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" 
-                                                CommandParameter="{Binding}"
-                                                VerticalAlignment="Top" HorizontalAlignment="Right"
-                                                Width="20" Height="20" Padding="0" Margin="0,5,0,0" Foreground="Red" FontSize="10" FontWeight="Bold"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </GroupBox>
+                                        <!-- S Slider -->
+                                        <Grid Margin="0,2,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="30"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="S:" VerticalAlignment="Center" FontSize="10"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding SMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                                            <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="255" 
+                                                              LowerValue="{Binding SMin}" HigherValue="{Binding SMax}">
+                                                <xctk:RangeSlider.Background>
+                                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                        <GradientStop Color="White" Offset="0"/>
+                                                        <GradientStop Color="#00BFA5" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </xctk:RangeSlider.Background>
+                                            </xctk:RangeSlider>
+                                            <TextBlock Grid.Column="3" Text="{Binding SMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                        </Grid>
 
+                                        <!-- V Slider -->
+                                        <Grid Margin="0,2,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="30"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="V:" VerticalAlignment="Center" FontSize="10"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding VMin, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                                            <xctk:RangeSlider Grid.Column="2" Minimum="0" Maximum="255" 
+                                                              LowerValue="{Binding VMin}" HigherValue="{Binding VMax}">
+                                                <xctk:RangeSlider.Background>
+                                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                        <GradientStop Color="Black" Offset="0"/>
+                                                        <GradientStop Color="White" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </xctk:RangeSlider.Background>
+                                            </xctk:RangeSlider>
+                                            <TextBlock Grid.Column="3" Text="{Binding VMax, StringFormat={}{0:0}}" VerticalAlignment="Center" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!-- Right column: Remove Button -->
+                                    <Button Grid.Column="2" Content="X" 
+                                            Command="{Binding DataContext.RemoveFilterCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                                            CommandParameter="{Binding}"
+                                            VerticalAlignment="Top" HorizontalAlignment="Right"
+                                            Width="20" Height="20" Padding="0" Margin="0,5,0,0" Foreground="Red" FontSize="10" FontWeight="Bold"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+
+            <!-- Bottom: Other Controls -->
+            <StackPanel Grid.Row="2">
                 <GroupBox Header="Chế độ hiển thị kết quả" Margin="0,0,0,10">
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <RadioButton Content="Gray (mask)" 
@@ -327,7 +341,7 @@
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
-        </ScrollViewer>
+        </Grid>
 
         <!-- Right Panel: Preview -->
         <Grid Grid.Column="2">
