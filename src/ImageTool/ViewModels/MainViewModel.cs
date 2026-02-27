@@ -90,6 +90,9 @@ namespace ImageTool.ViewModels
 
         [ObservableProperty]
         private ResultViewMode _resultPreviewMode = ResultViewMode.Bgra;
+        
+        [ObservableProperty]
+        private double _imageSplitterHeight = 250;
 
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
@@ -153,6 +156,7 @@ namespace ImageTool.ViewModels
         partial void OnIsOcrClosingEnabledChanged(bool value) { SaveSettings(); ApplyFilters(); }
 
         partial void OnResultPreviewModeChanged(ResultViewMode value) { SaveSettings(); ApplyFilters(); }
+        partial void OnImageSplitterHeightChanged(double value) => SaveSettings();
 
         private void LoadAvailableLanguages()
         {
@@ -220,6 +224,7 @@ namespace ImageTool.ViewModels
 
                         OcrLanguage = settings.OcrLanguage;
                         ResultPreviewMode = settings.ResultPreviewMode;
+                        ImageSplitterHeight = settings.ImageSplitterHeight;
                     }
                 }
             }
@@ -257,7 +262,8 @@ namespace ImageTool.ViewModels
                     IsOcrDilationEnabled = IsOcrDilationEnabled,
                     IsOcrClosingEnabled = IsOcrClosingEnabled,
                     OcrLanguage = OcrLanguage,
-                    ResultPreviewMode = ResultPreviewMode
+                    ResultPreviewMode = ResultPreviewMode,
+                    ImageSplitterHeight = ImageSplitterHeight
                 };
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFile, json);

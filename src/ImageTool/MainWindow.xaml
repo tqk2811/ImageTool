@@ -332,9 +332,14 @@
         <!-- Right Panel: Preview -->
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="200"/>
+                <RowDefinition Height="{Binding ImageSplitterHeight, Converter={StaticResource DoubleToGridLengthConverter}, Mode=TwoWay}" MinHeight="100"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            
+            <!-- Grid Splitter -->
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                          ShowsPreview="True" Height="5" Background="#EEE"/>
 
             <!-- Original Image Preview -->
             <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1" Margin="5">
@@ -361,7 +366,7 @@
 
 
             <!-- Processed Image Preview -->
-            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="5">
+            <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Margin="5">
                 <Grid ClipToBounds="True">
                     <Grid.Style>
                         <Style TargetType="Grid">

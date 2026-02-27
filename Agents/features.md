@@ -26,6 +26,7 @@ Tài liệu này mô tả chi tiết các tính năng chính của phần mềm 
 - **Scale Factor**: Cho phép phóng to cục bộ ảnh (Upscale) trước khi đẩy vào engine Tesseract để cải thiện khả năng đọc các ký tự quá nhỏ, sau đó tự động mapping lại tọa độ (Bounding Box) về kích thước ảnh gốc.
 - **Kết quả trả về**: Hiển thị chuỗi text, độ tin cậy (Confidence > 30%) và đánh dấu vị trí Bounding Box trên ảnh.
 
-## 5. Persistence (Lưu trữ trạng thái)
+- **Giao diện linh hoạt**: Hỗ trợ GridSplitter để thay đổi kích thước bảng điều khiển (dọc) và kích thước hai vùng xem ảnh (ngang). Vị trí splitter được tự động lưu lại.
+- **Persistence (Lưu trữ trạng thái)**:
 - Tự động lưu và tải danh sách bộ lọc vào file `filters.json`.
 - Tự động lưu kích thước panel, tùy chọn morphology, tuỳ chọn OCR ngôn ngữ, và màu nền lưới vào file `settings.json`.
