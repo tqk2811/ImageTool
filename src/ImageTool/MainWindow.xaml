@@ -184,13 +184,18 @@
             <!-- Bottom: Other Controls -->
             <StackPanel Grid.Row="2">
                 <GroupBox Header="Chế độ hiển thị kết quả" Margin="0,0,0,10">
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <RadioButton Content="Gray (mask)" 
-                                     IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Gray}"
-                                     Margin="0,0,10,0" FontSize="11"/>
-                        <RadioButton Content="Bgra (mask đã áp vào alpha)" 
-                                     IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Bgra}"
-                                     FontSize="11"/>
+                    <StackPanel Margin="5">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Gray (mask)" 
+                                         IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Gray}"
+                                         Margin="0,0,10,0" FontSize="11"/>
+                            <RadioButton Content="Bgra (mask đã áp vào alpha)" 
+                                         IsChecked="{Binding ResultPreviewMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Bgra}"
+                                         FontSize="11"/>
+                        </StackPanel>
+                        <CheckBox Content="Đảo ngược màu (Invert Mask)" 
+                                  IsChecked="{Binding IsInvertMask}" 
+                                  Margin="0,5,0,0" FontSize="11"/>
                     </StackPanel>
                 </GroupBox>
 

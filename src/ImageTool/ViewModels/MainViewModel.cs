@@ -94,6 +94,9 @@ namespace ImageTool.ViewModels
         [ObservableProperty]
         private double _imageSplitterHeight = 250;
 
+        [ObservableProperty]
+        private bool _isInvertMask = false;
+
         public ObservableCollection<ColorFilter> Filters { get; } = new();
         public ObservableCollection<OcrResult> OcrResults { get; } = new();
 
@@ -157,6 +160,7 @@ namespace ImageTool.ViewModels
 
         partial void OnResultPreviewModeChanged(ResultViewMode value) { SaveSettings(); ApplyFilters(); }
         partial void OnImageSplitterHeightChanged(double value) => SaveSettings();
+        partial void OnIsInvertMaskChanged(bool value) { SaveSettings(); ApplyFilters(); }
 
         private void LoadAvailableLanguages()
         {
@@ -225,6 +229,7 @@ namespace ImageTool.ViewModels
                         OcrLanguage = settings.OcrLanguage;
                         ResultPreviewMode = settings.ResultPreviewMode;
                         ImageSplitterHeight = settings.ImageSplitterHeight;
+                        IsInvertMask = settings.IsInvertMask;
                     }
                 }
             }
@@ -263,7 +268,8 @@ namespace ImageTool.ViewModels
                     IsOcrClosingEnabled = IsOcrClosingEnabled,
                     OcrLanguage = OcrLanguage,
                     ResultPreviewMode = ResultPreviewMode,
-                    ImageSplitterHeight = ImageSplitterHeight
+                    ImageSplitterHeight = ImageSplitterHeight,
+                    IsInvertMask = IsInvertMask
                 };
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFile, json);
@@ -299,6 +305,11 @@ namespace ImageTool.ViewModels
                         mask);
 
                     CvInvoke.BitwiseOr(combinedMask, mask, combinedMask);
+                }
+
+                if (IsInvertMask)
+                {
+                    CvInvoke.BitwiseNot(combinedMask, combinedMask);
                 }
 
                 _processedMat?.Dispose();

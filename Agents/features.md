@@ -14,7 +14,8 @@ Tài liệu này mô tả chi tiết các tính năng chính của phần mềm 
   - `Gray`: Hiển thị thẳng Mask dưới dạng ảnh đen/trắng (ảnh xám 1 channel).
   - `Bgra`: Hiển thị ảnh gốc nhưng sử dụng Mask làm kênh Alpha, giúp làm trong suốt các khu vực không khớp với bộ lọc.
 
-## 3. Tiền xử lý hình thái học (Morphology)
+- **Đảo ngược màu (Invert Mask)**: Cho phép đảo ngược vùng đen/trắng của Mask, hữu ích khi cần chọn các đối tượng có màu tương phản ngược lại.
+- **Tiền xử lý hình thái học (Morphology)**:
 Để cải thiện độ chính xác cho hệ thống OCR, người dùng có thể kích hoạt các phép biên đổi hình thái học trên Mask:
 - **Erosion (Co)**: Thu hẹp vùng chọn màu trắng.
 - **Dilation (Giãn)**: Mở rộng vùng chọn màu trắng.

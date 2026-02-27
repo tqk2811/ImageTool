@@ -23,6 +23,7 @@ namespace ImageTool.Models
         public string OcrLanguage { get; set; } = "eng";
         public ResultViewMode ResultPreviewMode { get; set; } = ResultViewMode.Bgra;
         public double ImageSplitterHeight { get; set; } = 250;
+        public bool IsInvertMask { get; set; } = false;
     }
 }
 
